@@ -5,6 +5,9 @@ A simple server API for iR Engine using feathers without a database.
 ### Consuming the server API
 
 ```ts
+import { Configuration, createApp } from '@hexafield/ir-simple-api/src/server'
+import baseServices from '@hexafield/ir-simple-api/src/server/services'
+
 const config: Configuration = {
   clientHost: process.env['CLIENT_HOST'] || 'localhost',
   clientPort: Number(process.env['CLIENT_PORT']) || null,
@@ -36,6 +39,8 @@ Ensure the server has baseServices configured (or that at least the p2p-signalin
 Two react hooks are exposed that use iR Engine's common API interface (thus feathers hooks)
 
 ```ts
+import { useFeathersClient, useP2PSignaling } from '@hexafield/ir-simple-api/src/client'
+
 useFeathersClient('https://localhost:3030') // server IP
 useP2PSignaling('my room' as NetworkID)
 ```

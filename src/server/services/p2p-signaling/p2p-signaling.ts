@@ -28,6 +28,11 @@ type SignalData = {
 
 const peerJoin = async (app: Application, data: JoinSignalingDataType, params: Params) => {
   const peerID = params.socketQuery!.peerID
+  /**
+   * @todo a simple user service to persist userids across refreshes - not secure
+   */
+  // @ts-ignore
+  const userID = params.socketQuery!.userID
 
   if (!peerID) throw new BadRequest('PeerID required')
 
@@ -42,7 +47,7 @@ const peerJoin = async (app: Application, data: JoinSignalingDataType, params: P
     peerID,
     peerIndex: newPeerIndex,
     /** @todo - figure out user service somehow */
-    userID: peerID as any as UserID
+    userID
   })
 
   console.info(`Peer ${peerID} joined instance ${data.networkID}`)

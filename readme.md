@@ -45,6 +45,8 @@ useFeathersClient('https://localhost:3030') // server IP
 useP2PSignaling('my room' as NetworkID)
 ```
 
+Note: Currently the UserID is handled automatically, and persisted to local storage, such that page refreshes do not lose your user. This is obviously insecure, but a good enough stopgap prior to a dedicated user and authentication service.
+
 
 ## Todo
 

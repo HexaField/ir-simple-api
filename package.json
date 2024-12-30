@@ -1,0 +1,24 @@
+{
+  "name": "@hexafield/ir-simple-api",
+  "version": "0.0.0",
+  "scripts": {
+    "test": "vitest run",
+    "dev": "ts-node src/index.ts",
+    "check-errors": "tsc --noemit",
+    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "format-scss": "stylelint \"**/*.scss\" --fix",
+    "format-staged": "lint-staged"
+  },
+  "license": "ISC",
+  "pre-commit": [
+    "format-staged"
+  ],
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write \"**/*.{ts,tsx}\""
+    ],
+    "*.scss": [
+      "stylelint \"**/*.scss\" --fix"
+    ]
+  }
+}

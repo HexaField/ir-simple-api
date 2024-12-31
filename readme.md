@@ -2,6 +2,8 @@
 
 A simple server API for iR Engine using feathers without a database.
 
+- Currently requries installation as a project - this will be standalone via npm in the future
+
 ### Consuming the server API
 
 ```ts

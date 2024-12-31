@@ -41,14 +41,10 @@ export const useFeathersClient = (host: string) => {
     const queryString = new URLSearchParams(query).toString()
     const primus = new Primus(`${host}?${queryString}`, {
       withCredentials: false,
-      pingTimeout: 30000,
-      pingInterval: 10000
+      pingInterval: 10000,
+      pingTimeout: 30000
     })
     feathersClient.configure(primusClient(primus, { timeout: 10000 }))
-
-    primus.on('open', () => {
-      console.log('Connection is alive and kicking')
-    })
 
     API.instance = feathersClient
 

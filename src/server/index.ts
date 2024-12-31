@@ -4,6 +4,7 @@ import { ServiceTypes } from '@ir-engine/common/declarations'
 import primus from '@ir-engine/server-core/src/util/primus' // todo pull out server import inside primus
 import fs from 'fs'
 import https from 'https'
+import healthcheck from 'koa-simple-healthcheck'
 import path from 'path'
 
 const cwd = process.cwd()
@@ -25,6 +26,8 @@ export const createApp = (services: (app: Application) => void, config: Configur
     ? 'https://' + config.clientHost + ':' + config.clientPort
     : 'https://' + config.clientHost
 
+  app.use(healthcheck())
+
   // primus
   app.configure(
     primus(
@@ -32,8 +35,8 @@ export const createApp = (services: (app: Application) => void, config: Configur
         transformer: 'websockets',
         origins: origin,
         methods: ['OPTIONS', 'GET', 'POST'],
-        pingInterval: 30000,
-        pingTimeout: 10000,
+        pingInterval: 10000,
+        pingTimeout: 30000,
         headers: '*',
         credentials: false
       },

@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import primusClient from '@ir-engine/client-core/src/util/primus-client'
 import { API } from '@ir-engine/common'
+import { EngineState } from '@ir-engine/ecs'
 import {
   HyperFlux,
   NO_PROXY,
@@ -13,7 +14,6 @@ import {
   getMutableState,
   syncStateWithLocalStorage
 } from '@ir-engine/hyperflux'
-import { EngineState } from '@ir-engine/spatial/src/EngineState'
 
 /**
  * @todo a simple user service to persist userids across refreshes - not secure

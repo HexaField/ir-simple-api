@@ -1,7 +1,6 @@
 import { BadRequest } from '@feathersjs/errors'
 import { Application, Params } from '@feathersjs/feathers'
-import { NetworkID, PeerID, UserID } from '@ir-engine/hyperflux'
-import { MessageTypes } from '@ir-engine/network'
+import { MessageTypes, NetworkID, PeerID, UserID } from '@ir-engine/hyperflux'
 import { p2pSignalingPath } from '../../../schemas/p2p-signaling/p2p-signaling.schema'
 
 let peerIndex = 0

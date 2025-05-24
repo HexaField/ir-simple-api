@@ -1,30 +1,27 @@
 import { API, useFind } from '@ir-engine/common'
 import { PUBLIC_STUN_SERVERS } from '@ir-engine/common/src/constants/STUNServers'
-import { Engine } from '@ir-engine/ecs'
+import { Engine, EngineState } from '@ir-engine/ecs'
 import {
+  MessageTypes,
+  NetworkActions,
   NetworkID,
+  NetworkState,
+  NetworkTopics,
   PeerID,
+  SendMessageType,
+  StunServerState,
   UserID,
+  WebRTCPeerConnection,
+  WebRTCTransportFunctions,
   dispatchAction,
   getMutableState,
   getState,
+  joinNetwork,
+  leaveNetwork,
   none,
   startReactor,
   useHookstate
 } from '@ir-engine/hyperflux'
-import {
-  MessageTypes,
-  NetworkActions,
-  NetworkState,
-  NetworkTopics,
-  SendMessageType,
-  StunServerState,
-  WebRTCTransportFunctions,
-  addNetwork,
-  createNetwork,
-  removeNetwork,
-  useWebRTCPeerConnection
-} from '@ir-engine/network'
 import React, { useEffect } from 'react'
 import { p2pSignalingPath } from '../../schemas/p2p-signaling/p2p-signaling.schema'
 
@@ -68,8 +65,7 @@ const ConnectionReactor = (props: { networkID: NetworkID }) => {
 
     getMutableState(NetworkState).hostIds[topic].set(networkID)
 
-    const network = createNetwork(networkID, null, topic, {})
-    addNetwork(network)
+    const network = joinNetwork(networkID, null, topic, {})
 
     network.ready = true
 
@@ -80,7 +76,7 @@ const ConnectionReactor = (props: { networkID: NetworkID }) => {
         $to: Engine.instance.store.peerID,
         peerID: Engine.instance.store.peerID,
         peerIndex: joinResponse.value.index,
-        userID: Engine.instance.userID
+        userID: getState(EngineState).userID
       })
     )
 
@@ -91,10 +87,10 @@ const ConnectionReactor = (props: { networkID: NetworkID }) => {
           $topic: network.topic,
           $to: Engine.instance.store.peerID,
           peerID: Engine.instance.store.peerID,
-          userID: Engine.instance.userID
+          userID: getState(EngineState).userID
         })
       )
-      removeNetwork(network)
+      leaveNetwork(network)
       getMutableState(NetworkState).hostIds[topic].set(none)
     }
   }, [joinResponse])
@@ -155,8 +151,6 @@ const sendMessage: SendMessageType = (networkID: NetworkID, toPeerID: PeerID, me
 const PeerReactor = (props: { peerID: PeerID; peerIndex: number; userID: UserID; networkID: NetworkID }) => {
   const network = getState(NetworkState).networks[props.networkID]
 
-  useWebRTCPeerConnection(network, props.peerID, props.peerIndex, props.userID, sendMessage)
-
   useEffect(() => {
     API.instance.service(p2pSignalingPath).on('patched', (data) => {
       // need to ignore messages from self
@@ -168,5 +162,15 @@ const PeerReactor = (props: { peerID: PeerID; peerIndex: number; userID: UserID;
     })
   }, [])
 
-  return null
+  return (
+    <WebRTCPeerConnection
+      network={network}
+      peerID={props.peerID}
+      peerIndex={props.peerIndex}
+      userID={props.userID}
+      sendMessage={sendMessage}
+      maxResolution="720p"
+      isPiP={false}
+    />
+  )
 }
